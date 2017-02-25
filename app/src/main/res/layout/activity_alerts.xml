@@ -32,7 +32,7 @@
                 android:text="＋"
                 android:id="@+id/addAlertButton"
                 android:layout_gravity="center_vertical|right"
-                android:textSize="40dp"
+                android:textSize="25dp"
                 android:textColor="#0026ff"
                 android:background="?android:attr/selectableItemBackground" />
 

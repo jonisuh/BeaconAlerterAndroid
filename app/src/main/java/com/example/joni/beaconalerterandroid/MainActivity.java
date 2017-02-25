@@ -2,9 +2,11 @@ package com.example.joni.beaconalerterandroid;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 
 
@@ -17,19 +19,29 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alerts);
 
-        final Spinner spinner = (Spinner) findViewById(R.id.moreOptions);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.more_options, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
-
 
         moreOptionsButton = (Button) findViewById(R.id.moreActionsButton);
         moreOptionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                spinner.performClick();
+                PopupMenu popup = new PopupMenu(MainActivity.this, moreOptionsButton);
+
+                popup.getMenuInflater().inflate(R.menu.more_options_menu, popup.getMenu());
+
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener(){
+                    public boolean onMenuItemClick(MenuItem item){
+                        switch (item.getItemId()){
+                            case R.id.action_sync:
+                                System.out.print("Sync");
+                            case R.id.action_settings:
+                                System.out.print("Settings");
+                            default:
+                                System.out.print("Should not happen");
+                        }
+                        return true;
+                    }
+                });
+                popup.show();
             }
         });
 

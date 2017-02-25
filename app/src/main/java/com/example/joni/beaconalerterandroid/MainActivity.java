@@ -1,7 +1,9 @@
 package com.example.joni.beaconalerterandroid;
 
+import android.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -28,17 +30,21 @@ public class MainActivity extends AppCompatActivity {
 
                 popup.getMenuInflater().inflate(R.menu.more_options_menu, popup.getMenu());
 
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener(){
-                    public boolean onMenuItemClick(MenuItem item){
-                        switch (item.getItemId()){
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
                             case R.id.action_sync:
-                                System.out.print("Sync");
+                                Log.d("MainActivity", "Sync");
+                                return true;
                             case R.id.action_settings:
-                                System.out.print("Settings");
+                                Log.d("MainActivity", "Settings");
+                                return true;
                             default:
-                                System.out.print("Should not happen");
+                                Log.d("MainActivity", "Should not happen");
+                                return false;
+
                         }
-                        return true;
                     }
                 });
                 popup.show();
@@ -49,7 +55,8 @@ public class MainActivity extends AppCompatActivity {
         addAlertButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                DialogFragment dialog = CreateAlertDialog.newInstance();
+                dialog.show(getFragmentManager(), "CreateAlertDialog");
             }
         });
     }

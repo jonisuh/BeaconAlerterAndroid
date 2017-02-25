@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" >
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="61dp"
+            android:weightSum="1"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:gravity="start">
+
+            <Button
+                android:layout_width="43dp"
+                android:layout_height="wrap_content"
+                android:text="〈 Alerts"
+                android:textAllCaps="false"
+                android:id="@+id/backToAlertsButton"
+                android:layout_gravity="center_vertical|right"
+                android:textSize="23dp"
+                android:textColor="#0026ff"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_weight="0.27"
+                android:gravity="left|center_vertical" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="46dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Settings"
+                android:id="@+id/textView16"
+                android:layout_weight="0.30"
+                android:gravity="bottom|center_horizontal" />
+
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/scrollView" >
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingRight="15dp"
+                android:paddingLeft="15dp">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="CLOCK"
+                        android:id="@+id/textView19" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Hour mode"
+                            android:id="@+id/textView20"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentStart="true"
+                            android:textColor="#000000" />
+
+                        <Button
+                            style="?android:attr/buttonStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="New Button"
+                            android:id="@+id/button11"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Date format"
+                            android:id="@+id/textView21"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentStart="true"
+                            android:textColor="#000000" />
+
+                        <Button
+                            style="?android:attr/buttonStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="New Button"
+                            android:id="@+id/button"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true" />
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="SNOOZE"
+                        android:id="@+id/textView22"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentStart="true" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Enable snooze"
+                            android:id="@+id/textView23"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentStart="true"
+                            android:textColor="#000000" />
+
+                        <Switch
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/switch2"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentEnd="true"
+                            android:checked="false"
+                            android:width="100dp" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Snooze length"
+                            android:id="@+id/textView24"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentStart="true"
+                            android:textColor="#000000" />
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:text="5 minutes"
+                                android:id="@+id/textView31"
+                                android:textColor="#000000" />
+
+                            <Button
+                                style="?android:attr/buttonStyleSmall"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="-"
+                                android:id="@+id/button13"
+                                android:textStyle="bold"
+                                android:textSize="16dp"
+                                android:layout_marginLeft="10dp" />
+
+                            <Button
+                                style="?android:attr/buttonStyleSmall"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="+"
+                                android:id="@+id/button14"
+                                android:textStyle="bold"
+                                android:textSize="16dp" />
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Max snoozes"
+                            android:id="@+id/textView28"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentStart="true"
+                            android:textColor="#000000" />
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:text="3"
+                                android:id="@+id/textView32"
+                                android:textColor="#000000" />
+
+                            <Button
+                                style="?android:attr/buttonStyleSmall"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="-"
+                                android:id="@+id/button15"
+                                android:textStyle="bold"
+                                android:textSize="16dp"
+                                android:layout_marginLeft="10dp" />
+
+                            <Button
+                                style="?android:attr/buttonStyleSmall"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="+"
+                                android:id="@+id/button17"
+                                android:textStyle="bold"
+                                android:textSize="16dp" />
+                        </LinearLayout>
+
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="SOUND"
+                        android:id="@+id/textView25" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Alert volume"
+                            android:id="@+id/textView26"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentStart="true"
+                            android:textColor="#000000" />
+
+                        <SeekBar
+                            android:layout_width="200dp"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/seekBar"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentEnd="true"
+                            android:indeterminate="false"
+                            android:splitTrack="false" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Alert Sound"
+                            android:id="@+id/textView27"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentStart="true"
+                            android:textColor="#000000" />
+
+                        <Button
+                            style="?android:attr/buttonStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="New Button"
+                            android:id="@+id/button16"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="SYNCHRONIZATION"
+                        android:id="@+id/textView29" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="Automatic synchronization"
+                            android:id="@+id/textView30"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentStart="true"
+                            android:textColor="#000000" />
+
+                        <Switch
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/switch3"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentEnd="true"
+                            android:checked="false"
+                            android:width="100dp" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+</RelativeLayout>

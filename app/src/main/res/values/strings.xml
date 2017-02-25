@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">BeaconAlerterAndroid</string>
+    <string-array name="more_options">
+        <item>Sync</item>
+        <item>Settings</item>
+    </string-array>
+</resources>

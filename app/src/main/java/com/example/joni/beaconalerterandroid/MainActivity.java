@@ -21,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alerts);
 
-
         moreOptionsButton = (Button) findViewById(R.id.moreActionsButton);
         moreOptionsButton.setOnClickListener(new View.OnClickListener() {
             @Override

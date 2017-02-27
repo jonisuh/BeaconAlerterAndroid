@@ -1,6 +1,7 @@
 package com.example.joni.beaconalerterandroid.jsonentities;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.util.Log;
 
 import com.example.joni.beaconalerterandroid.AlertsTable;
@@ -60,6 +61,15 @@ public class Alert {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public Alert(Cursor cursor){
+        this.title = cursor.getString(cursor.getColumnIndex(AlertsTable.COLUMN_TITLE));
+        this.time = stringToDate(cursor.getString(cursor.getColumnIndex(AlertsTable.COLUMN_TIME)));
+        this.repeating = (cursor.getInt(cursor.getColumnIndex(AlertsTable.COLUMN_REPEATING)) != 0);
+        this.isEnabled = (cursor.getInt(cursor.getColumnIndex(AlertsTable.COLUMN_ISENABLED)) != 0);
+        this.id = cursor.getString(cursor.getColumnIndex(AlertsTable.COLUMN_ALERTID));
+        this.days = convertStringToDays(cursor.getString(cursor.getColumnIndex(AlertsTable.COLUMN_DAYS)));
     }
 
     public ContentValues generateContentValue(){
@@ -147,7 +157,7 @@ public class Alert {
 
     public void setTitle(String title) {this.title = title;}
 
-    public static String convertDaysToString(boolean[] days){
+    public String convertDaysToString(boolean[] days){
         String daysAsString = "";
 
         for(int i = 0; i<days.length; i++) {
@@ -160,7 +170,7 @@ public class Alert {
         return daysAsString;
     }
 
-    public static boolean[] convertStringToDays(String days){
+    public boolean[] convertStringToDays(String days){
         char[] daysAsCharArray = days.toCharArray();
         boolean[] daysAsArray = new boolean[daysAsCharArray.length];
 

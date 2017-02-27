@@ -19,10 +19,10 @@
             </intent-filter>
         </activity>
 
-       <!-- <provider
+       <provider
             android:name=".AlertsProvider"
             android:authorities="com.example.joni.beaconalerterandroid.AlertsProvider"
-            android:enabled="true" />-->
+            android:enabled="true" />
 
         <activity android:name=".SettingsActivity" />
     </application>

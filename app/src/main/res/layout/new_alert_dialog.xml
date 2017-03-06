@@ -25,7 +25,9 @@
             android:hint="Title"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:singleLine="true"
+            android:imeOptions="actionDone"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -35,7 +37,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Medium Text"
                 android:id="@+id/showAlertTypeText"
                 android:layout_centerVertical="true"
                 android:layout_alignParentStart="true"
@@ -44,12 +45,12 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="New Button"
                 android:id="@+id/changeAlertTypeButton"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:textColor="#0026ff"
                 android:background="?android:attr/selectableItemBackground"
+                android:textAllCaps="false"
                 android:layout_marginRight="10dp" />
         </RelativeLayout>
 
@@ -70,7 +71,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="25dp"
                 android:layout_below="@+id/repeatingTimePicker"
                 android:layout_alignParentStart="true"
                 android:id="@+id/linearLayout">
@@ -81,11 +82,13 @@
                     android:layout_height="wrap_content"
                     android:text="MON"
                     android:id="@+id/dayButton0"
-                    android:textSize="12dp"
+                    android:textSize="13dp"
                     android:textColor="#0026ff"
                     android:background="?android:attr/selectableItemBackground"
                     android:layout_weight="6"
-                    android:layout_marginRight="2dp" />
+                    android:layout_marginRight="2dp"
+                    android:layout_marginLeft="3dp"
+                    android:shadowColor="#ffffff" />
 
                 <Button
                     style="?android:attr/borderlessButtonStyle"
@@ -93,11 +96,12 @@
                     android:layout_height="wrap_content"
                     android:text="TUE"
                     android:id="@+id/dayButton1"
-                    android:textSize="12dp"
+                    android:textSize="13dp"
                     android:textColor="#0026ff"
                     android:background="?android:attr/selectableItemBackground"
                     android:layout_weight="6"
-                    android:layout_marginRight="2dp" />
+                    android:layout_marginRight="2dp"
+                    android:shadowColor="#ffffff" />
 
                 <Button
                     style="?android:attr/borderlessButtonStyle"
@@ -105,11 +109,12 @@
                     android:layout_height="wrap_content"
                     android:text="WED"
                     android:id="@+id/dayButton2"
-                    android:textSize="12dp"
+                    android:textSize="13dp"
                     android:textColor="#0026ff"
                     android:background="?android:attr/selectableItemBackground"
                     android:layout_weight="6"
-                    android:layout_marginRight="2dp" />
+                    android:layout_marginRight="2dp"
+                    android:shadowColor="#ffffff" />
 
                 <Button
                     style="?android:attr/borderlessButtonStyle"
@@ -117,11 +122,13 @@
                     android:layout_height="wrap_content"
                     android:text="THU"
                     android:id="@+id/dayButton3"
-                    android:textSize="12dp"
+                    android:textSize="13dp"
                     android:textColor="#0026ff"
                     android:background="?android:attr/selectableItemBackground"
                     android:layout_weight="6"
-                    android:layout_marginRight="2dp" />
+                    android:layout_marginRight="2dp"
+                    android:stateListAnimator="@null"
+                    android:shadowColor="#ffffff" />
 
                 <Button
                     style="?android:attr/borderlessButtonStyle"
@@ -129,11 +136,12 @@
                     android:layout_height="wrap_content"
                     android:text="FRI"
                     android:id="@+id/dayButton4"
-                    android:textSize="12dp"
+                    android:textSize="13dp"
                     android:textColor="#0026ff"
                     android:background="?android:attr/selectableItemBackground"
                     android:layout_weight="6"
-                    android:layout_marginRight="2dp" />
+                    android:layout_marginRight="2dp"
+                    android:shadowColor="#ffffff" />
 
                 <Button
                     style="?android:attr/borderlessButtonStyle"
@@ -141,11 +149,12 @@
                     android:layout_height="wrap_content"
                     android:text="SAT"
                     android:id="@+id/dayButton5"
-                    android:textSize="12dp"
+                    android:textSize="13dp"
                     android:textColor="#0026ff"
                     android:background="?android:attr/selectableItemBackground"
                     android:layout_weight="6"
-                    android:layout_marginRight="2dp" />
+                    android:layout_marginRight="2dp"
+                    android:shadowColor="#ffffff" />
 
                 <Button
                     style="?android:attr/borderlessButtonStyle"
@@ -153,11 +162,12 @@
                     android:layout_height="wrap_content"
                     android:text="SUN"
                     android:id="@+id/dayButton6"
-                    android:textSize="12dp"
+                    android:textSize="13dp"
                     android:textColor="#0026ff"
                     android:background="?android:attr/selectableItemBackground"
                     android:layout_weight="6"
-                    android:layout_marginRight="2dp" />
+                    android:layout_marginRight="2dp"
+                    android:shadowColor="#ffffff" />
             </LinearLayout>
 
             <Button
@@ -170,7 +180,9 @@
                 android:layout_alignParentStart="true"
                 android:textColor="#0026ff"
                 android:background="?android:attr/selectableItemBackground"
-                android:layout_marginLeft="10dp" />
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="30dp"
+                android:textAllCaps="false"/>
         </RelativeLayout>
 
         <LinearLayout
@@ -201,7 +213,8 @@
                     android:text="Date"
                     android:id="@+id/textView13"
                     android:layout_centerVertical="true"
-                    android:layout_alignParentStart="true" />
+                    android:layout_alignParentStart="true"
+                    android:layout_marginLeft="10dp" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -215,7 +228,8 @@
                     android:text="Time"
                     android:id="@+id/textView15"
                     android:layout_centerVertical="true"
-                    android:layout_alignParentStart="true" />
+                    android:layout_alignParentStart="true"
+                    android:layout_marginLeft="10dp" />
 
                 <TimePicker
                     android:layout_width="match_parent"

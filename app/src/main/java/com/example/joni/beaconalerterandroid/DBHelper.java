@@ -7,7 +7,7 @@ import android.util.Log;
 
 public class DBHelper extends SQLiteOpenHelper {
     static final String DATABASE_NAME = "alertsLocalDataBase";
-    static final int DATABASE_VERSION = 1;
+    static final int DATABASE_VERSION = 2;
     static final String TABLE_ALERTS = AlertsTable.TABLE_ALERTS;
 
     public DBHelper(Context context) {

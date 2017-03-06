@@ -25,6 +25,7 @@ public class Alert {
     private boolean isEnabled;
     private String id;
     private boolean[] days;
+    private int sqliteId;
 
     public Alert() {
 
@@ -65,18 +66,19 @@ public class Alert {
 
     public Alert(Cursor cursor){
         this.title = cursor.getString(cursor.getColumnIndex(AlertsTable.COLUMN_TITLE));
-        this.time = stringToDate(cursor.getString(cursor.getColumnIndex(AlertsTable.COLUMN_TIME)));
+        this.time = new Date(cursor.getLong(cursor.getColumnIndex(AlertsTable.COLUMN_TIME)));
         this.repeating = (cursor.getInt(cursor.getColumnIndex(AlertsTable.COLUMN_REPEATING)) != 0);
         this.isEnabled = (cursor.getInt(cursor.getColumnIndex(AlertsTable.COLUMN_ISENABLED)) != 0);
         this.id = cursor.getString(cursor.getColumnIndex(AlertsTable.COLUMN_ALERTID));
         this.days = convertStringToDays(cursor.getString(cursor.getColumnIndex(AlertsTable.COLUMN_DAYS)));
+        this.sqliteId = cursor.getInt(cursor.getColumnIndex(AlertsTable.COLUMN_ID));
     }
 
     public ContentValues generateContentValue(){
         ContentValues values = new ContentValues();
 
         values.put(AlertsTable.COLUMN_TITLE, this.title);
-        values.put(AlertsTable.COLUMN_TIME, dateToString(this.time));
+        values.put(AlertsTable.COLUMN_TIME, this.time.getTime());
         values.put(AlertsTable.COLUMN_REPEATING, this.repeating);
         values.put(AlertsTable.COLUMN_ISENABLED, this.isEnabled);
         values.put(AlertsTable.COLUMN_ALERTID, this.id);
@@ -156,6 +158,10 @@ public class Alert {
     public String getTitle() {return title;}
 
     public void setTitle(String title) {this.title = title;}
+
+    public int getSqliteId() {return sqliteId;}
+
+    public void setSqliteIdt(int sqliteId) {this.sqliteId = sqliteId;}
 
     public String convertDaysToString(boolean[] days){
         String daysAsString = "";

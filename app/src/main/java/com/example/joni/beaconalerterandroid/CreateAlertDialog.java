@@ -3,13 +3,18 @@ package com.example.joni.beaconalerterandroid;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.AsyncQueryHandler;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -156,13 +161,23 @@ public class CreateAlertDialog extends DialogFragment implements View.OnClickLis
                 .setPositiveButton("Create",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                //TODO: Add alert creation
+                                //TODO: Switch to service
+
+                                Alert newAlert;
+
+                                //If alert object exists (edit mode) update its values
+                                if(alert != null){
+                                    newAlert = alert;
+                                //Else create new empty alert and generate UUID for it
+                                }else{
+                                    newAlert = new Alert();
+                                    String newId = UUID.randomUUID().toString();
+                                    newAlert.setId(newId);
+                                    newAlert.setIsEnabled(true);
+                                }
 
                                 String title = alertTitleField.getText().toString();
-                                boolean isEnabled = true;
                                 boolean repeating = showRepeating;
-                                //TODO: Generate locally unique UUID
-                                String newId = UUID.randomUUID().toString();
 
                                 Date time;
                                 Calendar calendar = Calendar.getInstance();
@@ -173,25 +188,42 @@ public class CreateAlertDialog extends DialogFragment implements View.OnClickLis
                                     for(int i=0;i<7; i++){
                                         days[i] = selectedButtons.get(dayButtons[i].getId());
                                     }
-                                    calendar.set(2000,0,1,repeatingTimePicker.getCurrentHour(),repeatingTimePicker.getCurrentMinute());
+                                    calendar.set(2000,0,1,repeatingTimePicker.getCurrentHour(),repeatingTimePicker.getCurrentMinute(),0);
                                 }else{
                                     //If alert is not repeating set all days to false and get exact date / time
                                     for(int i=0; i<7; i++){
                                         days[i] = false;
                                     }
-                                    calendar.set(nonRepeatingDatePicker.getYear(),nonRepeatingDatePicker.getMonth(),nonRepeatingDatePicker.getDayOfMonth(),nonRepeatingTimePicker.getCurrentHour(),repeatingTimePicker.getCurrentMinute());
+                                    calendar.set(nonRepeatingDatePicker.getYear(),nonRepeatingDatePicker.getMonth(),nonRepeatingDatePicker.getDayOfMonth(),nonRepeatingTimePicker.getCurrentHour(),nonRepeatingTimePicker.getCurrentMinute(),0);
                                 }
                                 //Create date object from calender
                                 time = calendar.getTime();
 
-                                alert = new Alert(title,time,repeating,isEnabled,newId,days);
-                                String alertJson = alert.generateJson();
+                                newAlert.setTitle(title);
+                                newAlert.setTime(time);
+                                newAlert.setRepeating(repeating);
+                                newAlert.setDays(days);
+
+                                String alertJson = newAlert.generateJson();
                                 Log.d("CreateAlertDialog", alertJson);
 
-                                ContentValues values = alert.generateContentValue();
-                                getActivity().getContentResolver().insert(AlertsProvider.ALERTS_CONTENT_URI, values);
+                                //Generating contentvalues from newAlert
+                                ContentValues values = newAlert.generateContentValue();
+                                //If alert exists, update it
+                                AlertScheduler scheduler = AlertScheduler.getInstance();
+                                if(alert != null){
+                                    getActivity().getContentResolver().update(AlertsProvider.ALERTS_CONTENT_URI, values,AlertsTable.COLUMN_ALERTID + "='" + alertID+"'",null);
+                                    if(newAlert.isEnabled()) {
+                                        Log.d("AlertScheduler", newAlert.getTime().toString());
+                                        scheduler.rescheduleAlert(newAlert);
+                                    }
+                                //Else create a new alert
+                                }else{
+                                    getActivity().getContentResolver().insert(AlertsProvider.ALERTS_CONTENT_URI, values);
+                                    scheduler.scheduleAlert(newAlert);
+                                }
 
-                                Cursor testCursor = getActivity().getContentResolver().query(AlertsProvider.ALERTS_CONTENT_URI,null,AlertsTable.COLUMN_ALERTID+"='"+alert.getId()+"'",null,null);
+                                Cursor testCursor = getActivity().getContentResolver().query(AlertsProvider.ALERTS_CONTENT_URI,null,AlertsTable.COLUMN_ALERTID+"='"+newAlert.getId()+"'",null,null);
 
                                 while(testCursor.moveToNext()){
                                     Log.d("CreateAlertDialog", testCursor.getString(testCursor.getColumnIndex(AlertsTable.COLUMN_TITLE)));
@@ -220,19 +252,29 @@ public class CreateAlertDialog extends DialogFragment implements View.OnClickLis
             @Override
             public void onShow(DialogInterface dialog) {
                 //Setting up initial views
-                //TODO: Set up alert based on settings and alert id here
-                //TODO: Need to do initial config if alert exists
+                Button createButton = thisDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                createButton.setEnabled(false);
                 if(alertID != null){
                     Log.d("CreateAlertDialog", "Alert found");
+                    titleText.setText("Edit alert");
+                    createButton.setText("Save");
+                    //Queying alert info from Content provider asynchronously
+                    AlertQueryHandler handler = new AlertQueryHandler(getActivity().getContentResolver());
+                    handler.execute();
+
+                    repeatingView.setVisibility(View.INVISIBLE);
+                    nonRepeatingView.setVisibility(View.GONE);
                 }else{
                     Log.d("CreateAlertDialog", "No alert found, creating new");
                     showRepeating = true;
                     titleText.setText("New alert");
-                    nonRepeatingTimePicker.setIs24HourView(true);
-                    repeatingTimePicker.setIs24HourView(true);
+                    changeAlertModeView();
                 }
-                changeAlertModeView();
-                updateCreateButtonState();
+
+                //TODO: Check settings
+                nonRepeatingTimePicker.setIs24HourView(true);
+                repeatingTimePicker.setIs24HourView(true);
+
             }
         });
 
@@ -297,7 +339,9 @@ public class CreateAlertDialog extends DialogFragment implements View.OnClickLis
         selectedButtons.put(v.getId(), true);
 
         Button clickedButton = (Button) v;
-        clickedButton.setBackgroundColor(Color.parseColor("#0026ff"));
+        //clickedButton.setBackgroundColor(Color.parseColor("#0026ff"));
+        clickedButton.setBackground(getResources().getDrawable(R.drawable.rounded_button));
+
         clickedButton.setTextColor(Color.WHITE);
     }
 
@@ -305,7 +349,71 @@ public class CreateAlertDialog extends DialogFragment implements View.OnClickLis
         selectedButtons.put(v.getId(), false);
 
         Button clickedButton = (Button) v;
-        clickedButton.setBackgroundColor(Color.WHITE);
+        //clickedButton.setBackgroundColor(Color.WHITE);
+
+        clickedButton.setBackground(getResources().getDrawable(R.drawable.unselected_rounded_button));
         clickedButton.setTextColor(Color.parseColor("#0026ff"));
+    }
+
+    //Query handler for asynchronously getting alert data
+    private class AlertQueryHandler extends AsyncQueryHandler {
+        public AlertQueryHandler(ContentResolver c) {
+            super(c);
+        }
+
+        public void execute() {
+            Log.d("CreateAlertDialog", "Queryhandler execute");
+            String[] PROJECTION = new String[]{
+                    AlertsTable.COLUMN_TITLE,
+                    AlertsTable.COLUMN_TIME,
+                    AlertsTable.COLUMN_REPEATING,
+                    AlertsTable.COLUMN_ISENABLED,
+                    AlertsTable.COLUMN_ALERTID,
+                    AlertsTable.COLUMN_ID,
+                    AlertsTable.COLUMN_DAYS
+            };
+
+            startQuery(0, null, AlertsProvider.ALERTS_CONTENT_URI, PROJECTION, AlertsTable.COLUMN_ALERTID + "='" + alertID+"'", null, null);
+        }
+
+        public void onQueryComplete(int t, Object command, Cursor c) {
+            Log.d("CreateAlertDialog", "Queryhandler complete");
+            if (c != null && c.getCount() > 0) {
+                c.moveToNext();
+                alert = new Alert(c);
+                c.close();
+
+                if(alert.getTitle() != "" || alert.getTitle() != null) {
+                    alertTitleField.setText(alert.getTitle());
+                }
+
+                showRepeating = alert.isRepeating();
+                changeAlertModeView();
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(alert.getTime());
+
+                if(showRepeating){
+                    repeatingTimePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
+                    repeatingTimePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
+                    boolean[] days = alert.getDays();
+                    for(int i=0; i < days.length; i++){
+                        selectedButtons.put(dayButtons[i].getId(),days[i]);
+                        if(days[i]){
+                            setButtonSelected(dayButtons[i]);
+                        }else{
+                            setButtonUnselected(dayButtons[i]);
+                        }
+                    }
+                }else{
+                    nonRepeatingTimePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
+                    nonRepeatingTimePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
+                    nonRepeatingDatePicker.updateDate(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
+                }
+
+                updateCreateButtonState();
+
+            }
+        }
     }
 }

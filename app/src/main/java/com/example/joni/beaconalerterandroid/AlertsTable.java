@@ -18,7 +18,7 @@ public class AlertsTable {
             + TABLE_ALERTS
             + " ("
             + COLUMN_ID + " integer primary key autoincrement, "
-            + COLUMN_TIME + " text,"
+            + COLUMN_TIME + " integer,"
             + COLUMN_REPEATING + " integer,"
             + COLUMN_ISENABLED + " integer,"
             + COLUMN_DAYS + " text,"

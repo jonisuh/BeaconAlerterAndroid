@@ -47,51 +47,70 @@ public class AlertScheduler {
         if(requestCode != -1) {
             intent.putExtra("sqlID", requestCode);
 
-            Log.d("AlertScheduler", "" + alert.getTime().toString());
-            Log.d("AlertScheduler", ""+requestCode);
-            Log.d("AlertScheduler", ""+alert.getId());
+            //Log.d("AlertScheduler", "" + alert.getTime().toString());
+            //Log.d("AlertScheduler", ""+requestCode);
+           // Log.d("AlertScheduler", ""+alert.getId());
             PendingIntent alertItent = PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
             Calendar calendar = Calendar.getInstance();
             Calendar timeNow = Calendar.getInstance();
 
-            if(alert.isRepeating()){
+            if(alert.isRepeating()) {
                 Calendar helperCalendar = Calendar.getInstance();
                 helperCalendar.setTime(alert.getTime());
 
                 calendar.set(Calendar.HOUR_OF_DAY, helperCalendar.get(Calendar.HOUR_OF_DAY));
                 calendar.set(Calendar.MINUTE, helperCalendar.get(Calendar.MINUTE));
                 calendar.set(Calendar.SECOND, 0);
+                calendar.set(Calendar.MILLISECOND, 0);
+                int today = timeNow.get(Calendar.DAY_OF_WEEK) - 2;
 
-                //Checking how many times a week the alert gets triggered
                 boolean[] days = alert.getDays();
-                int daysCount = 0;
-                for(int i=0; i<days.length;i++){
-                    if(days[i]){
-                        daysCount++;
+
+                //Checking that there's atleast one day selected
+                boolean hasDaySelected = false;
+                for (int j = 0; j < days.length; j++) {
+                    if(days[j]){
+                        hasDaySelected = true;
                     }
                 }
-                long interval;
-                //Alert repeats only once a week
-                if(daysCount == 1){
-                    interval = AlarmManager.INTERVAL_DAY * 7;
-                    if(calendar.before(timeNow)){
-                        Log.d("AlertScheduler", "Time had already passed");
-                        calendar.add(Calendar.DATE, 7);
+
+                if (hasDaySelected){
+                    if (!days[today] || (days[today] && calendar.before(timeNow))) {
+                        //Log.d("AlertScheduler", ""+days[today]);
+                        int i = today + 1;
+                        int nextScheduledDay = -1;
+
+                        while (nextScheduledDay == -1) {
+                            if (i > 6) {
+                                i = 0;
+                            }
+                            if (days[i]) {
+                                if(i <= today){
+                                    i += 7;
+                                }
+
+                                nextScheduledDay = i;
+
+                                break;
+                            }
+                            i++;
+                        }
+
+                        nextScheduledDay -= today;
+                        Log.d("AlertScheduler", "" + nextScheduledDay);
+                        calendar.add(Calendar.DATE, nextScheduledDay);
+
                     }
-                //Alert repeats more than once a week. We will handle alerting on correct days in the broadcast receiver
-                }else{
-                    interval = AlarmManager.INTERVAL_DAY;
-                    if(calendar.before(timeNow)){
-                        Log.d("AlertScheduler", "Time had already passed");
-                        calendar.add(Calendar.DATE, 1);
-                    }
+
+                    manager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alertItent);
+
+                    Log.d("AlertScheduler", calendar.toString());
                 }
-                Log.d("AlertScheduler", calendar.toString());
-                //manager.setRepeating(AlarmManager.RTC_WAKEUP, helperCalendar.getTimeInMillis(), interval, alertItent);
-                manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), interval, alertItent);
             }else{
                 calendar.setTime(alert.getTime());
+                calendar.set(Calendar.SECOND, 0);
+                calendar.set(Calendar.MILLISECOND, 0);
                 Log.d("AlertScheduler", calendar.toString());
                 if(!calendar.before(timeNow)){
                     manager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alertItent);

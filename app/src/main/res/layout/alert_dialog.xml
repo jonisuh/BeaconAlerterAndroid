@@ -7,29 +7,39 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
-        android:id="@+id/textView17"
+        android:id="@+id/popupTitleText"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:textColor="#000000" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
-        android:id="@+id/textView18"
-        android:layout_marginLeft="10dp" />
+        android:id="@+id/popupTimeView"
+        android:layout_marginLeft="10dp"
+        android:gravity="center_horizontal"
+        android:textSize="30dp" />
 
-    <ImageView
+    <ImageButton
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:id="@+id/imageView" />
+        android:id="@+id/closeAlertButton" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/popupProgressText"
+        android:gravity="center_horizontal"
+        android:textColor="#000000" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Snooze"
-        android:id="@+id/button12"
+        android:id="@+id/snoozeButton"
         android:layout_gravity="center_horizontal"
         android:textColor="#0026ff"
         android:background="?android:attr/selectableItemBackground"/>

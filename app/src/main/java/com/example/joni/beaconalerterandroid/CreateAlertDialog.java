@@ -223,18 +223,6 @@ public class CreateAlertDialog extends DialogFragment implements View.OnClickLis
                                     scheduler.scheduleAlert(newAlert);
                                 }
 
-                                Cursor testCursor = getActivity().getContentResolver().query(AlertsProvider.ALERTS_CONTENT_URI,null,AlertsTable.COLUMN_ALERTID+"='"+newAlert.getId()+"'",null,null);
-
-                                while(testCursor.moveToNext()){
-                                    Log.d("CreateAlertDialog", testCursor.getString(testCursor.getColumnIndex(AlertsTable.COLUMN_TITLE)));
-                                    Log.d("CreateAlertDialog", testCursor.getString(testCursor.getColumnIndex(AlertsTable.COLUMN_TIME)));
-                                    Log.d("CreateAlertDialog", ""+testCursor.getInt(testCursor.getColumnIndex(AlertsTable.COLUMN_REPEATING)));
-                                    Log.d("CreateAlertDialog", ""+testCursor.getInt(testCursor.getColumnIndex(AlertsTable.COLUMN_ISENABLED)));
-                                    Log.d("CreateAlertDialog", testCursor.getString(testCursor.getColumnIndex(AlertsTable.COLUMN_ALERTID)));
-                                    Log.d("CreateAlertDialog", testCursor.getString(testCursor.getColumnIndex(AlertsTable.COLUMN_DAYS)));
-
-                                }
-                                testCursor.close();
                                 /*
                                 Intent createAlertIntent = new Intent(getActivity(), CreateAlertService.class);
 

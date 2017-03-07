@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
 
-                                Cursor alertCursor = getContentResolver().query(AlertsProvider.ALERTS_CONTENT_URI,null,AlertsTable.COLUMN_ALERTID+"='"+alertID+"'",null,null);
+                                Cursor alertCursor = getContentResolver().query(AlertsProvider.ALERTS_CONTENT_URI, null, AlertsTable.COLUMN_ALERTID + "='" + alertID + "'", null, null);
 
                                 alertCursor.moveToNext();
                                 Alert alert = new Alert(alertCursor);
@@ -189,6 +189,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 dialog.show(getFragmentManager(), "CreateAlertDialog");
             }
         });
+
+        //Try displaying popover if alert was triggered
+        showAlertPopover();
     }
 
     //CursorLoader methods
@@ -224,6 +227,25 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     public Context getContext(){
         return getBaseContext();
+    }
+
+    private void showAlertPopover(){
+        //Handling intent from alert scheduler receiver. If intent contains an alertID we open the alert popup dialog
+        Intent intent = getIntent();
+        String alert = intent.getStringExtra("alert");
+        if(alert != null){
+            Log.d("MainActivity", alert+"\nReceived in MainActivity");
+            DialogFragment dialog = AlertPopupDialog.newInstance(alert);
+            dialog.show(getFragmentManager(), "AlertPopupDialog");
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.d("MainActivity", "New intent");
+        super.onNewIntent(intent);
+        setIntent(intent);//must store the new intent unless getIntent() will return the old one
+        showAlertPopover();
     }
 
 }

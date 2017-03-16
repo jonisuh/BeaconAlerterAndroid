@@ -181,8 +181,9 @@
                 android:textColor="#0026ff"
                 android:background="?android:attr/selectableItemBackground"
                 android:layout_marginLeft="10dp"
-                android:layout_marginBottom="30dp"
-                android:textAllCaps="false"/>
+                android:layout_marginBottom="40dp"
+                android:textAllCaps="false"
+                android:layout_marginTop="10dp" />
         </RelativeLayout>
 
         <LinearLayout
@@ -198,7 +199,7 @@
 
                 <DatePicker
                     android:layout_width="wrap_content"
-                    android:layout_height="125dp"
+                    android:layout_height="135dp"
                     android:id="@+id/nonRepeatingDatePicker"
                     android:datePickerMode="spinner"
                     android:calendarViewShown="false"
@@ -233,7 +234,7 @@
 
                 <TimePicker
                     android:layout_width="match_parent"
-                    android:layout_height="125dp"
+                    android:layout_height="135dp"
                     android:id="@+id/nonRepeatingTimePicker"
                     android:layout_gravity="center_vertical"
                     android:timePickerMode="spinner"

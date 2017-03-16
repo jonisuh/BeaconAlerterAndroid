@@ -28,6 +28,8 @@ public class AlertSchedulerReceiver extends BroadcastReceiver {
         String alertID = intent.getStringExtra("alertID");
         int sqlID = intent.getIntExtra("sqlID", -1);
 
+        int snoozeCount = intent.getIntExtra("snooze", -1);
+
         String toastText = alertID+"\n"+sqlID;
         Log.d("AlertSchedulerReceiver", toastText);
         Cursor alertCursor = context.getContentResolver().query(AlertsProvider.ALERTS_CONTENT_URI, null, AlertsTable.COLUMN_ALERTID + "='" + alertID + "'", null, null);
@@ -40,6 +42,9 @@ public class AlertSchedulerReceiver extends BroadcastReceiver {
         if(alert.isRepeating()){
             Calendar calendar = Calendar.getInstance();
             int currentWeekday = calendar.get(Calendar.DAY_OF_WEEK)-2;
+            if(currentWeekday == -1){
+                currentWeekday = 6;
+            }
             if(alert.getDays()[currentWeekday]){
                 displayAlert = true;
                 Log.d("AlertSchedulerReceiver", "enabled today");
@@ -47,7 +52,7 @@ public class AlertSchedulerReceiver extends BroadcastReceiver {
                 displayAlert = false;
                 Log.d("AlertSchedulerReceiver", "disabled today");
             }
-            //TODO: Reschedule for next day
+
             //Rescheduling a repeating alert for the next available date.
             AlertScheduler scheduler = AlertScheduler.getInstance();
             scheduler.setContext(context);
@@ -61,15 +66,14 @@ public class AlertSchedulerReceiver extends BroadcastReceiver {
         if(displayAlert) {
             Intent openMainActivityIntent = new Intent(context, MainActivity.class);
             openMainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            //openMainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             openMainActivityIntent.putExtra("alert", alert.generateJson());
+            if(snoozeCount != -1){
+                openMainActivityIntent.putExtra("snooze", snoozeCount);
+                Log.d("AlertSchedulerReceiver", "Snooze found "+snoozeCount);
+            }
             context.startActivity(openMainActivityIntent);
             Log.d("AlertSchedulerReceiver", "Attached " + alert.generateJson() +" to intent.");
         }
-
-        Toast t = Toast.makeText(context, toastText, Toast.LENGTH_SHORT);
-        t.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
-        t.show();
 
         wl.release();
     }

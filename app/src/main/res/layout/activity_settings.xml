@@ -513,7 +513,7 @@
                             android:layout_alignParentEnd="true"
                             android:layout_toEndOf="@+id/textView3"
                             android:textAlignment="textEnd"
-                            android:textSize="16dp"
+                            android:textSize="13dp"
                             android:background="?android:attr/selectableItemBackground"
                             android:allowUndo="true"
                             android:textAllCaps="false"

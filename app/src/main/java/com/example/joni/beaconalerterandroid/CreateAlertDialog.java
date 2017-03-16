@@ -6,8 +6,10 @@ import android.app.DialogFragment;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
@@ -26,7 +28,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.example.joni.beaconalerterandroid.Services.PostAlertService;
+import com.example.joni.beaconalerterandroid.Services.UpdateAlertService;
 import com.example.joni.beaconalerterandroid.jsonentities.Alert;
+import com.example.joni.beaconalerterandroid.jsonentities.Settings;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +49,7 @@ import java.util.UUID;
 public class CreateAlertDialog extends DialogFragment implements View.OnClickListener{
     private String alertID;
     private Alert alert;
+    private SharedPreferences prefs;
 
     private View dialogview;
     private AlertDialog thisDialog;
@@ -100,6 +106,7 @@ public class CreateAlertDialog extends DialogFragment implements View.OnClickLis
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        prefs = getActivity().getSharedPreferences("com.example.joni.beaconalerterandroid", Context.MODE_PRIVATE);
 
         titleText = (TextView) dialogview.findViewById(R.id.titleText);
         alertTitleField = (EditText) dialogview.findViewById(R.id.alertTitleField);
@@ -161,8 +168,6 @@ public class CreateAlertDialog extends DialogFragment implements View.OnClickLis
                 .setPositiveButton("Create",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                //TODO: Switch to service
-
                                 Alert newAlert;
 
                                 //If alert object exists (edit mode) update its values
@@ -207,29 +212,27 @@ public class CreateAlertDialog extends DialogFragment implements View.OnClickLis
                                 String alertJson = newAlert.generateJson();
                                 Log.d("CreateAlertDialog", alertJson);
 
-                                //Generating contentvalues from newAlert
-                                ContentValues values = newAlert.generateContentValue();
                                 //If alert exists, update it
                                 AlertScheduler scheduler = AlertScheduler.getInstance();
+                                Intent alertIntent;
+
                                 if(alert != null){
-                                    getActivity().getContentResolver().update(AlertsProvider.ALERTS_CONTENT_URI, values,AlertsTable.COLUMN_ALERTID + "='" + alertID+"'",null);
+                                    alertIntent = new Intent(getActivity(), UpdateAlertService.class);
+                                    alertIntent.putExtra("alert", newAlert.generateJson());
+
                                     if(newAlert.isEnabled()) {
                                         Log.d("AlertScheduler", newAlert.getTime().toString());
                                         scheduler.rescheduleAlert(newAlert);
                                     }
                                 //Else create a new alert
                                 }else{
-                                    getActivity().getContentResolver().insert(AlertsProvider.ALERTS_CONTENT_URI, values);
-                                    scheduler.scheduleAlert(newAlert);
+                                    alertIntent = new Intent(getActivity(), PostAlertService.class);
+                                    alertIntent.putExtra("action", "post");
+                                    alertIntent.putExtra("alert", newAlert.generateJson());
                                 }
 
-                                /*
-                                Intent createAlertIntent = new Intent(getActivity(), CreateAlertService.class);
+                                getActivity().startService(alertIntent);
 
-                                createAlertIntent.putExtra("alert", alertJson);
-
-                                getActivity().startService(createAlertIntent);
-                                */
                             }
                         });
 
@@ -259,10 +262,16 @@ public class CreateAlertDialog extends DialogFragment implements View.OnClickLis
                     changeAlertModeView();
                 }
 
-                //TODO: Check settings
-                nonRepeatingTimePicker.setIs24HourView(true);
-                repeatingTimePicker.setIs24HourView(true);
 
+                String hourMode = prefs.getString(Settings.HOUR_MODE,"24");
+                boolean set24HourMode;
+                if(hourMode.equals("24")){
+                    set24HourMode = true;
+                }else{
+                    set24HourMode = false;
+                }
+                nonRepeatingTimePicker.setIs24HourView(set24HourMode);
+                repeatingTimePicker.setIs24HourView(set24HourMode);
             }
         });
 
@@ -327,7 +336,6 @@ public class CreateAlertDialog extends DialogFragment implements View.OnClickLis
         selectedButtons.put(v.getId(), true);
 
         Button clickedButton = (Button) v;
-        //clickedButton.setBackgroundColor(Color.parseColor("#0026ff"));
         clickedButton.setBackground(getResources().getDrawable(R.drawable.rounded_button));
 
         clickedButton.setTextColor(Color.WHITE);

@@ -9,33 +9,29 @@ import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Point;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Display;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.joni.beaconalerterandroid.jsonentities.Alert;
-
-import java.util.List;
+import com.example.joni.beaconalerterandroid.Services.SynchronizationService;
+import com.example.joni.beaconalerterandroid.jsonentities.Settings;
 
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+    //Server URL
+    public static final String SERVER_URL = "https://beaconalerter.herokuapp.com/api/";
 
     private Button moreOptionsButton;
     private Button addAlertButton;
@@ -60,10 +56,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private String SELECTION = "";
     private Uri CONTENT_URI = AlertsProvider.ALERTS_CONTENT_URI;
 
+    private boolean returningFromSettings;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alerts);
+        returningFromSettings = false;
 
         //Ensures that app wakes up correctly and displays the applcation
         final Window win = getWindow();
@@ -88,67 +87,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         alertsListView.setAdapter(alertsAdapter);
         getLoaderManager().initLoader(1, null, this);
 
-        /*
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        final int buttonWidth = (int) (size.x * 0.20);
-        */
-
-        alertsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("MainActivity", "" + id);
-
-                String alertID = ((TextView) view.findViewById(R.id.cell_id_view)).getText().toString();
-                Log.d("MainActivity", "" + alertID);
-
-                DialogFragment dialog = CreateAlertDialog.newInstance(alertID);
-                dialog.show(getFragmentManager(), "CreateAlertDialog");
-
-            }
-        });
-
-        alertsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, final View view, int position, long id) {
-
-                final String alertID = ((TextView) view.findViewById(R.id.cell_id_view)).getText().toString();
-
-                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-                alertDialog.setTitle("Delete");
-                alertDialog.setMessage("Do you want to delete the alert?");
-                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Delete",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                Cursor alertCursor = getContentResolver().query(AlertsProvider.ALERTS_CONTENT_URI, null, AlertsTable.COLUMN_ALERTID + "='" + alertID + "'", null, null);
-
-                                alertCursor.moveToNext();
-                                Alert alert = new Alert(alertCursor);
-                                alertCursor.close();
-
-                                scheduler.cancelAlert(alert);
-                                getContentResolver().delete(AlertsProvider.ALERTS_CONTENT_URI, AlertsTable.COLUMN_ALERTID + "='" + alertID + "'", null);
-
-
-                                Log.d("AdapterLog", "delete");
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.show();
-
-
-                return true;
-            }
-        });
+        TextView emptyText = (TextView)findViewById(R.id.noAlertsFoundView);
+        alertsListView.setEmptyView(emptyText);
 
         moreOptionsButton = (Button) findViewById(R.id.moreActionsButton);
         moreOptionsButton.setOnClickListener(new View.OnClickListener() {
@@ -164,9 +104,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         switch (item.getItemId()) {
                             case R.id.action_sync:
                                 Log.d("MainActivity", "Sync");
+                                Intent syncIntent = new Intent(MainActivity.this, SynchronizationService.class);
+                                syncIntent.putExtra("forceSync",true);
+                                startService(syncIntent);
                                 return true;
                             case R.id.action_settings:
                                 Log.d("MainActivity", "Settings");
+                                returningFromSettings = true;
                                 Intent openSettingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
                                 startActivity(openSettingsIntent);
                                 return true;
@@ -234,8 +178,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Intent intent = getIntent();
         String alert = intent.getStringExtra("alert");
         if(alert != null){
-            Log.d("MainActivity", alert+"\nReceived in MainActivity");
-            DialogFragment dialog = AlertPopupDialog.newInstance(alert);
+            Log.d("MainActivity", alert + "\nReceived in MainActivity");
+            DialogFragment dialog;
+            int snooze = intent.getIntExtra("snooze", -1);
+            if(snooze != -1){
+                dialog = AlertPopupDialog.newInstance(alert,snooze);
+            }else {
+                dialog = AlertPopupDialog.newInstance(alert);
+            }
+            dialog.setCancelable(false);
             dialog.show(getFragmentManager(), "AlertPopupDialog");
         }
     }
@@ -248,4 +199,25 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         showAlertPopover();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("MainActivity", "Refreshing adapter.");
+        alertsAdapter.notifyDataSetChanged();
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(!returningFromSettings){
+            SharedPreferences prefs = getSharedPreferences("com.example.joni.beaconalerterandroid", Context.MODE_PRIVATE);
+            if(prefs.getBoolean(Settings.AUTOMATIC_SYNC,true)){
+                Intent syncIntent = new Intent(MainActivity.this, SynchronizationService.class);
+                startService(syncIntent);
+            }
+        }else{
+            returningFromSettings = false;
+        }
+    }
 }

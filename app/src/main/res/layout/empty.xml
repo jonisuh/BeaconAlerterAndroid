@@ -3,11 +3,12 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RadioButton
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="MON"
-        android:id="@+id/radioButton"
-        android:layout_gravity="center_horizontal"
-        android:checked="true" />
+        android:text="No alerts found"
+        android:id="@+id/noAlertsFound"
+        android:layout_gravity="center"
+        android:textColor="#a3a6ff"
+        android:textSize="26dp" />
 </LinearLayout>

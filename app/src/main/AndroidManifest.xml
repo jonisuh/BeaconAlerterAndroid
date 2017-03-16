@@ -4,9 +4,15 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
+
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
 
     <application
         android:allowBackup="true"
@@ -16,7 +22,8 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,12 +31,17 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".SettingsActivity"
+            android:screenOrientation="portrait"/>
+
        <provider
             android:name=".AlertsProvider"
             android:authorities="com.example.joni.beaconalerterandroid.AlertsProvider"
             android:enabled="true" />
 
-        <activity android:name=".SettingsActivity" />
+
+
         <receiver
             android:name=".AlertSchedulerReceiver"
             android:enabled="true"></receiver>
@@ -43,6 +55,22 @@
 
 
         <service android:name=".Services.RescheduleAlertsService"/>
+        <!--ALERT NETWORKING-->
+        <service android:name=".Services.PostAlertService"/>
+        <service android:name=".Services.UpdateAlertService"/>
+        <service android:name=".Services.DeleteAlertService"/>
+        <service android:name=".Services.GetAlertsService"/>
+
+        <!--SETTINGS NETWORKING-->
+        <service android:name=".Services.PostSettingsService"/>
+        <service android:name=".Services.GetSettingsService"/>
+
+        <!-- SYNC -->
+        <service android:name=".Services.SynchronizationService"/>
+
+        <!--<service android:name=".Services.EddystoneScannerService"
+            android:exported="false" />-->
+
     </application>
 
 </manifest>

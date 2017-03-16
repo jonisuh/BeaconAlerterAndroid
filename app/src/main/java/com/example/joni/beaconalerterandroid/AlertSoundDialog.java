@@ -36,6 +36,8 @@ public class AlertSoundDialog  extends DialogFragment {
     private SharedPreferences prefs;
     private MediaPlayer mp;
 
+    private float alertVolume;
+
     static AlertSoundDialog newInstance() {
         AlertSoundDialog dialog = new AlertSoundDialog();
         return dialog;
@@ -56,7 +58,7 @@ public class AlertSoundDialog  extends DialogFragment {
         prefs = getActivity().getSharedPreferences("com.example.joni.beaconalerterandroid", Context.MODE_PRIVATE);
         selectedSound = prefs.getString(Settings.ALERT_SOUND, "clock");
 
-
+        alertVolume = prefs.getFloat(Settings.SOUND_VOLUME, (float) 1.00);
 
         Field[] fields=R.raw.class.getFields();
         soundNames = new String[fields.length];
@@ -110,8 +112,21 @@ public class AlertSoundDialog  extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return null;
     }
+
+    @Override
+    public void onDismiss(DialogInterface dialog){
+        super.onDismiss(dialog);
+        stopSound();
+    }
+
+    @Override
+    public void onCancel(DialogInterface dialog){
+        super.onCancel(dialog);
+        stopSound();
+    }
+
     private void stopSound(){
-        //Stop player playing
+        //Stop the mediaplayer and make it null
         if(mp != null) {
             mp.stop();
             mp.release();
@@ -131,7 +146,7 @@ public class AlertSoundDialog  extends DialogFragment {
             }
 
         });
-
+        mp.setVolume(alertVolume, alertVolume);
         mp.start();
         mp.setLooping(true);
     }
@@ -163,7 +178,7 @@ public class AlertSoundDialog  extends DialogFragment {
                     }
                     v.setBackgroundColor(0xFFC4CCFB);
                     selectedSound = soundNames[rowPosition];
-                    //TODO: Play sound here!
+
                     playSound();
                     Log.d("AlertSoundDialog", selectedSound);
                 }

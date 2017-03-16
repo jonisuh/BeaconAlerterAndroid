@@ -14,7 +14,12 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.example.joni.beaconalerterandroid.Services.DeleteAlertService;
+import com.example.joni.beaconalerterandroid.Services.PostSettingsService;
 import com.example.joni.beaconalerterandroid.jsonentities.Settings;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class SettingsActivity extends AppCompatActivity {
     private Button backToAlertsButton;
@@ -79,7 +84,7 @@ public class SettingsActivity extends AppCompatActivity {
         dateFormatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment dialog = AlertSoundDialog.newInstance();
+                DateFormatDialog dialog = DateFormatDialog.newInstance();
                 dialog.show(getFragmentManager(), "DateFormatDialog");
             }
         });
@@ -194,6 +199,8 @@ public class SettingsActivity extends AppCompatActivity {
         beaconIDButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DialogFragment dialog = BeaconSelectionDialog.newInstance();
+                dialog.show(getFragmentManager(), "BeaconSelectionDialog");
             }
         });
 
@@ -202,7 +209,11 @@ public class SettingsActivity extends AppCompatActivity {
 
     public void updateViews(){
         hourModeButton.setText(prefs.getString(Settings.HOUR_MODE,"24"));
-        dateFormatButton.setText(prefs.getString(Settings.DATE_FORMAT, "dd/MMM/yyyy"));
+
+        String dateFormat = prefs.getString(Settings.DATE_FORMAT, "dd/MMM/yyyy");
+        Date timeNow = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+        dateFormatButton.setText(formatter.format(timeNow));
 
         enableSnoozeSwitch.setChecked(prefs.getBoolean(Settings.SNOOZE_ON, true));
 
@@ -215,5 +226,15 @@ public class SettingsActivity extends AppCompatActivity {
         enableSyncSwitch.setChecked(prefs.getBoolean(Settings.AUTOMATIC_SYNC, true));
         beaconIDButton.setText(prefs.getString(Settings.BEACON_ID,"No beacon set."));
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(prefs.getBoolean(Settings.AUTOMATIC_SYNC, true)) {
+            Intent postSettingsActivity = new Intent(this, PostSettingsService.class);
+            startService(postSettingsActivity);
+        }
+        Log.d("SettingsActivity", "Returning from settings");
     }
 }

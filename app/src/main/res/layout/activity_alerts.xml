@@ -63,5 +63,16 @@
             android:drawSelectorOnTop="false"
             android:paddingTop="3dp"
             android:footerDividersEnabled="false" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="No alerts"
+            android:id="@+id/noAlertsFoundView"
+            android:textColor="#a3a6ff"
+            android:background="@drawable/alert_list_view_background"
+            android:textSize="18dp"
+            android:visibility="gone"
+            android:gravity="center_vertical|center_horizontal" /> />
     </LinearLayout>
 </RelativeLayout>

@@ -12,8 +12,10 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by Joni on 25.2.2017.
@@ -116,20 +118,20 @@ public class Alert {
     public Date stringToDate(String date){
         //yyyy-MM-dd'T'HH:mm:ss.SSSZ
         try {
-            DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZZZ", Locale.ENGLISH);
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.ENGLISH);
+            format.setTimeZone(TimeZone.getTimeZone("UTC"));
             Date dateFromString = format.parse(date);
-
             return dateFromString;
         } catch (ParseException e) {
             e.printStackTrace();
-            Log.d("CreateAlertDialog", e.toString());
+            Log.d("Alert", e.toString());
             return null;
         }
     }
 
     public String dateToString(Date date){
-        //yyyy-MM-dd'T'HH:mm:ssZZZZZ
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZZZ", Locale.ENGLISH);
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.ENGLISH);
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
         String stringFromDate = format.format(date);
         return stringFromDate;
     }

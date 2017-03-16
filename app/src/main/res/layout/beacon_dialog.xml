@@ -3,4 +3,54 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:text="Scan"
+                android:id="@+id/scanButton"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:textColor="#0026ff"
+                android:background="?android:attr/selectableItemBackground"
+                android:textAllCaps="false"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Select beacon"
+                android:id="@+id/textView5"
+                android:layout_marginLeft="10dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true" />
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/scanProgressSpinner"
+                android:layout_alignTop="@+id/textView5"
+                android:layout_toStartOf="@+id/scanButton"
+                android:indeterminate="true"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:id="@+id/beaconListView"
+            android:layout_below="@+id/textView5"
+            android:layout_centerHorizontal="true" />
+
+    </LinearLayout>
+
 </LinearLayout>
